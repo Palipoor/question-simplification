@@ -1,6 +1,6 @@
 # TODO:
 
-- [ ] GCP A100
+- [x] GCP A100
 - [ ] AmbigQA Dataset
 - [ ] Training Loop
 - [ ] Fine tune
