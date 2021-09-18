@@ -20,7 +20,7 @@ def get_turk_data(split):
     
     """
     if split == 'train':
-        turk_split = 'evaluation'
+        turk_split = 'validation'
     else:
         turk_split = 'test'
     turk_data = load_dataset('turk')[turk_split]
@@ -37,8 +37,8 @@ def get_turk_data(split):
     
 def get_dataset(dataset_name,tokenizer, split):
     def preprocess(data) : 
-        input_ids = tokenizer(text=data['original'], return_tensors='pt').input_ids
-        decoder_ids = tokenizer(text=data['simplification'], return_tensors = 'pt').input_ids
+        input_ids = tokenizer(text=data['original'], return_tensors='pt', max_length = 128, padding = True).input_ids
+        decoder_ids = tokenizer(text=data['simplification'], return_tensors = 'pt', max_length = 128, padding = True).input_ids
         return {'input_ids': input_ids, 'decoder_input_ids': decoder_ids}
 
     if dataset_name == 'turk': 
