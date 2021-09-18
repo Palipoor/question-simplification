@@ -1,6 +1,8 @@
 # TODO:
 
-[] GCP A100
-[] AmbigQA Dataset
-[] Training Loop
-[] 
+- [ ] GCP A100
+- [ ] AmbigQA Dataset
+- [ ] Training Loop
+- [ ] Fine tune
+- [ ] Evaluate on ZEST
+- [ ] Evaluate on SPIDER
