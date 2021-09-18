@@ -40,15 +40,18 @@ def get_turk_data(split):
 
 def get_dataset(dataset_name, tokenizer, split):
     def preprocess(data):
-        input_ids = tokenizer(
-            text=data["original"], return_tensors="pt", max_length=128, padding=True
-        ).input_ids
-        decoder_ids = tokenizer(
-            text=data["simplification"],
-            return_tensors="pt",
+        input_ids = tokenizer.encode_plus(
+            text=data['original'],
+            add_special_tokens=False,
+            padding='max_length',
             max_length=128,
-            padding=True,
-        ).input_ids
+            truncation=True)['input_ids']
+        decoder_ids = tokenizer.encode_plus(
+            text=data['simplification'],
+            add_special_tokens=False,
+            padding='max_length',
+            max_length=128,
+            truncation=True)['input_ids']
         return {"input_ids": input_ids, "decoder_input_ids": decoder_ids}
 
     if dataset_name == "turk":

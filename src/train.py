@@ -48,7 +48,6 @@ def main():
     )
     train_dataset = get_dataset(args.dataset, tokenizer, "train")
     eval_dataset = get_dataset(args.dataset, tokenizer, "eval")
-    print(eval_dataset)
     trainer = Seq2SeqTrainer(
         model,
         args=training_arguments,
