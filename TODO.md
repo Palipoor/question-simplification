@@ -3,7 +3,7 @@
 - [x] GCP A100 (@gabeorlanski)
 - [x] Fix Asset Dataset (@gabeorlanski)
 - [ ] Simple Script for training (@palipoor)
-- [ ] Refix asset dataset (@gabeorlanski)
+- [x] Refix asset dataset (@gabeorlanski)
 - [ ] Prediction function. Takes in model and data, then outputs predictions from model (@NotDachun)
 
 # On the backburner:
