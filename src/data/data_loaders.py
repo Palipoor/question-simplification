@@ -55,7 +55,7 @@ def get_dataset(dataset_name, tokenizer, split):
             padding='max_length',
             max_length=128,
             truncation=True)['input_ids']
-        return {"input_ids": input_ids, "attention_mask" : input_attention_mask,"decoder_input_ids": decoder_ids}
+        return {"input_ids": input_ids, "attention_mask" : input_attention_mask,"labels": decoder_ids}
 
     if dataset_name == "turk":
         dataset = get_turk_data(split)
