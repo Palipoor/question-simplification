@@ -1,15 +1,14 @@
 from datasets import load_dataset, Dataset
 from numpy import load
 
-def get_asset_data():
-    pass
-
+def get_asset_data(split):
+    asset = load_dataset("src/data/asset.py",'simplification')
+    return asset
 def get_ambiqa_data():
     pass
 
 def get_zest_data():
     pass
-
 
 def get_turk_data(split):   
     """
@@ -37,4 +36,11 @@ def get_turk_data(split):
     return dataset
     
 def get_dataset(dataset_name,tokenizer, split):
-    pass
+    def preprocess(data) : 
+        input_ids = tokenizer(text=data['original'], return_tensors='pt').input_ids
+        decoder_ids = tokenizer(text=data['simplification'], return_tensors = 'pt').input_ids
+        return {'input_ids': input_ids, 'decoder_input_ids': decoder_ids}
+
+    if dataset_name == 'turk': 
+        dataset = get_turk_data(split)
+        return dataset.map(preprocess)

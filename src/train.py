@@ -1,7 +1,7 @@
 import argparse
 import torch
 from tqdm import tqdm
-from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments, training_args
+from transformers import AutoModel, AutoTokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments, training_args
 from .data_loaders import *
 def main():
     parser = argparse.ArgumentParser()
@@ -17,7 +17,7 @@ def main():
     if args.load_ckpt:
         pass #TODO load from checkpoint
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    training_arguments = TrainingArguments(  #TODO update these. Just copied from another code I had lol
+    training_arguments = Seq2SeqTrainingArguments(  #TODO update these. Just copied from another code I had lol
                 do_train=True,
                 do_eval=True,
                 per_device_train_batch_size=16,
@@ -33,5 +33,5 @@ def main():
         )
     train_dataset = get_dataset(args.dataset, 'train')
     eval_dataset = get_dataset(args.dataset, 'eval')
-    trainer = Trainer(args=training_arguments, train_dataset = train_dataset, eval_dataset=eval_dataset)
+    trainer = Seq2SeqTrainer(args=training_arguments, train_dataset = train_dataset, eval_dataset=eval_dataset)
     trainer.train()
