@@ -51,11 +51,9 @@ def get_turk_data(split):
 def get_dataset(dataset_name, tokenizer, split):
     def preprocess(data):
         # add "simplify" as task-specific prefix
-        data_prefixed = []
-        for instance in data["original"]:
-            data_prefixed.append("simplify: " + instance)
+        data["original"] = "simplify: " + data['original'] 
         inputs_encoded = tokenizer.encode_plus(
-            text=data_prefixed,
+            text=data["original"],
             add_special_tokens=False,
             padding='max_length',
             return_attention_mask = True,
