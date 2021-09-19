@@ -7,17 +7,17 @@ import torch
 
 @click.command()
 @click.argument("dataset_name", metavar="<Dataset>")
-@click.argument("model", metavar="<model>")
+@click.argument("model_name", metavar="<model>")
 @click.argument("checkpoint", metavar="<model>")
 @click.option("--beam", "-b", type=int, default=5)
 @click.option("--length", "-l", type=int, default=128)
 @click.option("--simplifier_model", "-simplifier", type = str, default = None)
 @click.option("--simplifier_tokenizer", "-simplifier_tokenizer", type = str, default = None)
-def main(dataset_name, model, checkpoint, beam, length, simplifier_model, simplifier_tokenizer):
+def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, simplifier_tokenizer):
     bleu = load_metric("sacrebleu")
     sari = load_metric("sari")
     model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
-    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     if 'simplified' in dataset_name:
         data = get_dataset(dataset_name, tokenizer, 'validation',simplifier_model,simplifier_tokenizer)
     else:    
