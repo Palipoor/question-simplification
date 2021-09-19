@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 output/
 runs/
+checkpoints/
 .vscode/*
 # C extensions
 *.so
