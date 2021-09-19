@@ -55,7 +55,7 @@ def get_turk_data(split):
     instances = {"original": [], "simplification": []}
     for instance in turk_data:
         for simplification in instance["simplifications"]:
-            instances["original"].append("simplify: " + instance["original"])
+            instances["original"].append(instance["original"])
             instances["simplification"].append(simplification)
     dataset = Dataset.from_dict(instances)
     return dataset
@@ -64,7 +64,7 @@ def get_turk_data(split):
 def get_dataset(dataset_name, tokenizer, split):
     def preprocess(data):
         inputs_encoded = tokenizer.encode_plus(
-            text=data["original"],
+            text="simplify: " + data["original"],
             add_special_tokens=False,
             padding='max_length',
             return_attention_mask = True,

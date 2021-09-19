@@ -22,7 +22,6 @@ def compute_metrics_bleu(prediction, tokenizer):
 
     # Some simple post-processing
     decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
-    print(decoded_preds)
     result = metric.compute(predictions=decoded_preds, references=decoded_labels)
     result = {"bleu": result["score"]}
 
