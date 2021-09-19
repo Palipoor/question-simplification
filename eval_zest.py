@@ -21,14 +21,15 @@ def main(model_name, checkpoint, beam, length, simplified,simplifier_model, simp
         data = get_dataset("zest-simplified", tokenizer, 'validation')
     else:
         data = get_dataset("zest", tokenizer, 'validation')
-    counter = 0
     predictions = []
+    model.to('cuda')
     for d in tqdm(data):
-        generated = model.generate(input_ids = torch.tensor([d['input_ids']]), num_beams=beam, max_length = length, do_sample = True, early_stopping=True, repetition_penalty= 2.0)
+        generated = model.generate(input_ids = torch.tensor([d['input_ids']]).cuda(), num_beams=beam, max_length = length, do_sample = True)
         decoded_preds = tokenizer.batch_decode(generated, skip_special_tokens=True)[0]
         predictions.append(decoded_preds)
+        counter += 1
     with open('results.txt', 'w') as f:
         for p in predictions:
-            f.writeline(p)
+            f.write(p + '\n')
 if __name__ == '__main__':
     main()
