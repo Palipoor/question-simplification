@@ -26,14 +26,15 @@ def get_zest_data(split):
 
     """
     if split != "train":
-        split = "test"
+        split = "validation"
     zest_data = load_dataset("zest")[split]
     instances = {"inputs": [], "targets": []}
     for instance in zest_data:
         instances["inputs"].append(
             f'zest question: {instance["question"]}?\n\n'
             f'zest context: {instance["context"]}\n\n')
-        instances["targets"].append(instance["answer"])
+
+        instances["targets"].append(instance["answer"][0])
     dataset = Dataset.from_dict(instances)
     return dataset
 
@@ -62,7 +63,7 @@ def get_turk_data(split):
 
 
 def get_dataset(dataset_name, tokenizer, split):
-    def preprocess(data):
+    def simplify_preprocess(data):
         inputs_encoded = tokenizer.encode_plus(
             text="simplify: " + data["original"],
             add_special_tokens=False,
@@ -79,13 +80,31 @@ def get_dataset(dataset_name, tokenizer, split):
             max_length=128,
             truncation=True)['input_ids']
         return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
+    
+    def zest_preprocess(data):
+        inputs_encoded = tokenizer.encode_plus(
+            text=data["inputs"],
+            add_special_tokens=False,
+            padding='max_length',
+            return_attention_mask = True,
+            max_length=128,
+            truncation=True)
+        input_ids = inputs_encoded['input_ids']
+        input_attention_mask = inputs_encoded['attention_mask']
+        decoder_ids = tokenizer.encode_plus(
+            text=data['targets'],
+            add_special_tokens=False,
+            padding='max_length',
+            max_length=128,
+            truncation=True)['input_ids']
+        return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
 
     if dataset_name == "turk":
         dataset = get_turk_data(split)
-        return dataset.map(preprocess)
+        return dataset.map(simplify_preprocess)
     elif dataset_name == "asset":
         dataset = get_asset_data(split)
-        return dataset.map(preprocess)
+        return dataset.map(simplify_preprocess)
     elif dataset_name == "zest":
         dataset = get_zest_data(split)
-        return dataset.map(preprocess)
+        return dataset.map(zest_preprocess)
