@@ -34,7 +34,7 @@ def main(mode, dataset_name, model_name, batch_size):
     # parser.add_argument("-load-ckpt", action="store_true")
     # parser.add_argument("--ckpt", type=str)
     # args = parser.parse_args()
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name, gradient_checkpointing = True)
     # if args.load_ckpt:
     #     pass  # TODO load from checkpoint
     tokenizer = AutoTokenizer.from_pretrained(model_name)
