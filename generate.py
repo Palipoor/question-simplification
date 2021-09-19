@@ -13,6 +13,3 @@ import click
 def main(checkpoint,tokenizer, source_dataset, max_length, beam):
     model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer)
-    
-
-    

@@ -11,7 +11,7 @@ def get_asset_data(split):
     instances = {"original": [], "simplification": []}
     for instance in asset_data:
         for simplification in instance["simplifications"]:
-            instances["original"].append(instance["original"])
+            instances["original"].append("simplify: " + instance["original"])
             instances["simplification"].append(simplification)
     dataset = Dataset.from_dict(instances)
     return dataset
@@ -30,11 +30,12 @@ def get_zest_data(split):
     zest_data = load_dataset("zest")[split]
     instances = {"inputs": [], "targets": []}
     for instance in zest_data:
-        instances["inputs"].append(
-            f'zest question: {instance["question"]}?\n\n'
-            f'zest context: {instance["context"]}\n\n')
+        for answer in instance["answer"]: 
+            instances["inputs"].append(
+                f'zest question: {instance["question"]}?\n\n'
+                f'zest context: {instance["context"]}\n\n')
 
-        instances["targets"].append(instance["answer"][0])
+            instances["targets"].append(answer)
     dataset = Dataset.from_dict(instances)
     return dataset
 
@@ -56,7 +57,7 @@ def get_turk_data(split):
     instances = {"original": [], "simplification": []}
     for instance in turk_data:
         for simplification in instance["simplifications"]:
-            instances["original"].append(instance["original"])
+            instances["original"].append("simplify: " +  instance["original"])
             instances["simplification"].append(simplification)
     dataset = Dataset.from_dict(instances)
     return dataset
@@ -65,7 +66,7 @@ def get_turk_data(split):
 def get_dataset(dataset_name, tokenizer, split):
     def simplify_preprocess(data):
         inputs_encoded = tokenizer.encode_plus(
-            text="simplify: " + data["original"],
+            text=data["original"],
             add_special_tokens=False,
             padding='max_length',
             return_attention_mask = True,
