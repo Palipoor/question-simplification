@@ -50,8 +50,10 @@ def get_turk_data(split):
 
 def get_dataset(dataset_name, tokenizer, split):
     def preprocess(data):
+        # add "simplify" as task-specific prefix
+        data["original"] = "simplify: " + data['original'] 
         inputs_encoded = tokenizer.encode_plus(
-            text=data['original'],
+            text=data["original"],
             add_special_tokens=False,
             padding='max_length',
             return_attention_mask = True,
@@ -65,7 +67,7 @@ def get_dataset(dataset_name, tokenizer, split):
             padding='max_length',
             max_length=128,
             truncation=True)['input_ids']
-        return {"input_ids": input_ids, "attention_mask" : input_attention_mask,"labels": decoder_ids}
+        return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
 
     if dataset_name == "turk":
         dataset = get_turk_data(split)
