@@ -11,7 +11,7 @@ def get_asset_data(split):
     instances = {"original": [], "simplification": []}
     for instance in asset_data:
         for simplification in instance["simplifications"]:
-            instances["original"].append("simplify: " + instance["original"])
+            instances["original"].append(instance["original"])
             instances["simplification"].append(simplification)
     dataset = Dataset.from_dict(instances)
     return dataset
