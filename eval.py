@@ -19,10 +19,7 @@ def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, s
     sari = load_metric("sari")
     model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    if 'simplified' in dataset_name:
-        data = get_dataset(dataset_name, tokenizer, 'validation',simplifier_model,simplifier_tokenizer)
-    else:    
-        data = get_dataset(dataset_name, tokenizer, 'validation')
+    data = get_dataset(dataset_name, tokenizer, 'validation')
     total_bleu = 0
     total_sari=0
     counter = 0
@@ -37,15 +34,13 @@ def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, s
         result = bleu.compute(predictions=decoded_preds, references=decoded_references)
         total_bleu += result['score']
         source = d['input_ids']
-        if 'simplified' in dataset_name:
-            decoded_source = [tokenizer.batch_decode(source, skip_special_tokens=True)[0]]
-            result = sari.compute(sources = decoded_source, predictions=decoded_preds, references=decoded_references)
-            total_sari += result['sari']
+        decoded_source = [tokenizer.batch_decode(source, skip_special_tokens=True)[0]]
+        result = sari.compute(sources = decoded_source, predictions=decoded_preds, references=decoded_references)
+        total_sari += result['sari']
     total_bleu = total_bleu / (counter - 1)
     total_sari = total_sari / (counter - 1)
     print('bleu ', total_bleu)
-    if 'simplified' in dataset_name:
-        print('sari ', total_sari)
+    print('sari ', total_sari)
 
     
 if __name__ == '__main__':
