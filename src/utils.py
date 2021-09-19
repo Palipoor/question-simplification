@@ -3,6 +3,8 @@ from transformers import EvalPrediction
 from datasets import load_metric
 from typing import Dict
 
+from transformers import AutoModelForSeq2SeqLM,AutoTokenizer
+
 
 def postprocess_text(preds, labels):
     preds = [pred.strip() for pred in preds]
@@ -31,3 +33,21 @@ def compute_metrics_bleu(prediction, tokenizer):
     return result
 
 
+class Simplifier:
+    def __init__(self, path, tokenizer, beam = 5, length = 128):
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(path)
+        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
+        self.beam = beam
+        self.length = length
+    def simplify(self,text):
+        inputs_encoded = self.tokenizer.encode_plus(
+            text=text,
+            add_special_tokens=False,
+            padding='max_length',
+            return_attention_mask = True,
+            max_length=128,
+            truncation=True, return_tensors='pt')
+        input_ids = inputs_encoded['input_ids']
+        print(input_ids)
+        output = self.model.generate(input_ids = input_ids, num_beams=self.beam, max_length = self.length, do_sample = True, early_stopping=True, repetition_penalty= 2.0)
+        return self.tokenizer.batch_decode(output, skip_special_tokens=True)[0]
