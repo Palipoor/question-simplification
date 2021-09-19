@@ -21,11 +21,12 @@ from src.utils import *
 @click.argument("model_name", metavar="<model_name>")
 @click.option("--batch-size", "-bs", type=int, default=16)
 @click.option("--checkpoint", "-chkpt", type = str, default = None)
-def main(mode, dataset_name, model_name, batch_size, checkpoint):
+@click.option("--run-name", "-run", type = str, default = None)
+def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     training_arguments = Seq2SeqTrainingArguments(
-        output_dir="./output/",
+        output_dir=f"./checkpoints/{run_name}",
         do_train=True,
         do_eval=True,
         per_device_train_batch_size=batch_size,
