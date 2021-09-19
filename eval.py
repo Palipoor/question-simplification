@@ -25,7 +25,11 @@ def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, s
         data = get_dataset(dataset_name, tokenizer, 'validation')
     total_bleu = 0
     total_sari=0
+    counter = 0
     for d in tqdm(data):
+        counter += 1
+        if counter == 101:
+            break
         references = np.where(d['labels'] != -100, d['labels'], tokenizer.pad_token_id)
         decoded_references = [tokenizer.batch_decode([references], skip_special_tokens=True)]
         generated = model.generate(input_ids = torch.tensor([d['input_ids']]), num_beams=beam, max_length = length, do_sample = True, early_stopping=True, repetition_penalty= 2.0)
@@ -37,8 +41,8 @@ def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, s
             decoded_source = [tokenizer.batch_decode(source, skip_special_tokens=True)[0]]
             result = sari.compute(sources = decoded_source, predictions=decoded_preds, references=decoded_references)
             total_sari += result['sari']
-    total_bleu = total_bleu / len(data)
-    total_sari = total_sari / len(data)
+    total_bleu = total_bleu / (counter - 1)
+    total_sari = total_sari / (counter - 1)
     print('bleu ', total_bleu)
     if 'simplified' in dataset_name:
         print('sari ', total_sari)
