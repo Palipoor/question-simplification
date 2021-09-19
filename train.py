@@ -14,11 +14,12 @@ from src.data.data_loaders import *
 
 
 @click.command()
+@click.argument("run_name", metavar="<Mode>")
 @click.argument("mode", metavar="<Mode>")
 @click.argument("dataset_name", metavar="<Dataset>")
 @click.argument("model_name", metavar="<model_name>")
 @click.option("--batch-size", "-bs", type=int, default=16)
-def main(mode, dataset_name, model_name, batch_size):
+def main(run_name,mode, dataset_name, model_name, batch_size):
     # parser = argparse.ArgumentParser()
     # parser.add_argument(
     #     "--mode",
@@ -39,7 +40,7 @@ def main(mode, dataset_name, model_name, batch_size):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     training_arguments = Seq2SeqTrainingArguments(
         # TODO update these. Just copied from another code I had lol
-        output_dir="./output/",
+        output_dir=f"./output/{run_name}",
         do_train=True,
         do_eval=True,
         per_device_train_batch_size=batch_size,
