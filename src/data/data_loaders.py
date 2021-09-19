@@ -81,6 +81,17 @@ def get_turk_data(split):
     return dataset
 
 
+def get_spider_data(split):
+    if split != "train":
+        split = "validation"
+    spider_data = load_dataset("spider")[split]
+    instances = {"question": [], "query": []}
+    for instance in spider_data:
+        instances["question"].append("convert to sql: " +  instance["question"])
+        instances["query"].append(instance["query"])
+    dataset = Dataset.from_dict(instances)
+    return dataset
+
 def get_dataset(dataset_name, tokenizer, split, model_path = '', generate_tokenizer=''):
     def simplify_preprocess(data):
         inputs_encoded = tokenizer.encode_plus(
@@ -118,6 +129,24 @@ def get_dataset(dataset_name, tokenizer, split, model_path = '', generate_tokeni
             truncation=True)['input_ids']
         return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
 
+    def spider_preprocess(data):
+        inputs_encoded = tokenizer.encode_plus(
+            text=data["question"],
+            add_special_tokens=False,
+            padding='max_length',
+            return_attention_mask = True,
+            max_length=128,
+            truncation=True)
+        input_ids = inputs_encoded['input_ids']
+        input_attention_mask = inputs_encoded['attention_mask']
+        decoder_ids = tokenizer.encode_plus(
+            text=data['query'],
+            add_special_tokens=False,
+            padding='max_length',
+            max_length=128,
+            truncation=True)['input_ids']
+        return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
+
 
     if dataset_name == "turk":
         dataset = get_turk_data(split)
@@ -131,3 +160,6 @@ def get_dataset(dataset_name, tokenizer, split, model_path = '', generate_tokeni
     elif dataset_name == "zest-simplified":
         dataset = get_simplified_zest(split, model_path, generate_tokenizer)
         return dataset.map(zest_preprocess)
+    elif dataset_name == "spider":
+        dataset = get_spider_data(split)
+        return dataset.map(spider_preprocess)
