@@ -30,7 +30,7 @@ def main(mode, dataset_name, model_name, batch_size, checkpoint):
         do_eval=True,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
-        num_train_epochs=50,
+        num_train_epochs=16,
         logging_steps=500,
         evaluation_strategy = "epoch",
         logging_first_step=True,
