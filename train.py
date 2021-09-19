@@ -10,7 +10,7 @@ from transformers import (
     Seq2SeqTrainingArguments,
     training_args,
 )
-from data.data_loaders import *
+from src.data.data_loaders import *
 
 
 @click.command()
