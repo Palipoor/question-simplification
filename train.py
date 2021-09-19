@@ -16,13 +16,15 @@ from src.utils import *
 
 
 @click.command()
-@click.argument("mode", metavar="<Mode>")
 @click.argument("dataset_name", metavar="<Dataset>")
 @click.argument("model_name", metavar="<model_name>")
+@click.option("--simplify_model_name", "-smn", type=str, default="")
+@click.option("--simplify_tokenizer_name", "-stn", type=str, default="")
 @click.option("--batch-size", "-bs", type=int, default=16)
 @click.option("--checkpoint", "-chkpt", type = str, default = None)
 @click.option("--run-name", "-run", type = str, default = None)
-def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
+def main(dataset_name, model_name, simplify_model_name, 
+        simplify_tokenizer_name, batch_size, checkpoint, run_name):
     if checkpoint:
         model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
     else:
@@ -43,10 +45,20 @@ def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
         predict_with_generate=True,
         report_to= ["tensorboard"]
     )
-    train_dataset = get_dataset(dataset_name, tokenizer, "train")
-    eval_dataset = get_dataset(dataset_name, tokenizer, "eval")
-    data_collator = DataCollatorForSeq2Seq(tokenizer =tokenizer)
-    if dataset_name != 'zest': 
+
+    train_dataset = None
+    eval_dataset = None
+    if dataset_name != "zest-simplified":
+        train_dataset = get_dataset(dataset_name, tokenizer, "train")
+        eval_dataset = get_dataset(dataset_name, tokenizer, "eval")
+    else:
+        train_dataset = get_dataset(dataset_name, tokenizer, "train", 
+            model_path=simplify_model_name, generate_tokenizer=simplify_tokenizer_name)
+        eval_dataset = get_dataset(dataset_name, tokenizer, "eval", 
+            model_path=simplify_model_name, generate_tokenizer=simplify_tokenizer_name)
+    data_collator = DataCollatorForSeq2Seq(tokenizer = tokenizer)
+
+    if dataset_name in ["turk", "asset"]: 
         metr = functools.partial(compute_metrics_bleu,tokenizer=tokenizer)
     else:
         metr= None
