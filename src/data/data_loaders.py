@@ -21,8 +21,9 @@ def get_ambiqa_data():
     pass
 
 
-def get_zest_data():
-    pass
+def get_zest_data(split):
+    dataset = load_dataset('zest',split)
+    return dataset
 
 
 def get_turk_data(split):
