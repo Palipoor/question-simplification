@@ -11,8 +11,8 @@ from transformers import (
     Seq2SeqTrainingArguments,
     DataCollatorForSeq2Seq
 )
-from data.data_loaders import *
-from utils import *
+from src.data.data_loaders import *
+from src.utils import *
 
 
 @click.command()

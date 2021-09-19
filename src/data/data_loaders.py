@@ -3,8 +3,18 @@ from numpy import load
 
 
 def get_asset_data(split):
-    asset = load_dataset("src/data/asset.py", "simplification")
-    return asset
+    if split == "train":
+        asset_split = "validation"
+    else:
+        asset_split = "test"
+    asset_data = load_dataset("src/data/asset.py", "simplification")[asset_split]
+    instances = {"original": [], "simplification": []}
+    for instance in asset_data:
+        for simplification in instance["simplifications"]:
+            instances["original"].append(instance["original"])
+            instances["simplification"].append(simplification)
+    dataset = Dataset.from_dict(instances)
+    return dataset
 
 
 def get_ambiqa_data():
@@ -59,4 +69,7 @@ def get_dataset(dataset_name, tokenizer, split):
 
     if dataset_name == "turk":
         dataset = get_turk_data(split)
+        return dataset.map(preprocess)
+    elif dataset_name == "asset":
+        dataset = get_asset_data(split)
         return dataset.map(preprocess)
