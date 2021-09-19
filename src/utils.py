@@ -30,5 +30,4 @@ def compute_metrics_bleu(prediction, tokenizer):
     result = {k: round(v, 4) for k, v in result.items()}
     return result
 
-def compute_metrics_sari(p: EvalPrediction) -> Dict:
-    pass
+
