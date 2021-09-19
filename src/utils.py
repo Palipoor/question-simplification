@@ -48,6 +48,5 @@ class Simplifier:
             max_length=128,
             truncation=True, return_tensors='pt')
         input_ids = inputs_encoded['input_ids']
-        print(input_ids)
         output = self.model.generate(input_ids = input_ids, num_beams=self.beam, max_length = self.length, do_sample = True, early_stopping=True, repetition_penalty= 2.0)
         return self.tokenizer.batch_decode(output, skip_special_tokens=True)[0]

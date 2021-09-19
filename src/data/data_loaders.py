@@ -118,6 +118,7 @@ def get_dataset(dataset_name, tokenizer, split, model_path = '', generate_tokeni
             truncation=True)['input_ids']
         return {"input_ids": input_ids, "attention_mask" : input_attention_mask, "labels": decoder_ids}
 
+
     if dataset_name == "turk":
         dataset = get_turk_data(split)
         return dataset.map(simplify_preprocess)
@@ -127,6 +128,6 @@ def get_dataset(dataset_name, tokenizer, split, model_path = '', generate_tokeni
     elif dataset_name == "zest":
         dataset = get_zest_data(split)
         return dataset.map(zest_preprocess)
-    elif dataset_name == "zest_simplified":
+    elif dataset_name == "zest-simplified":
         dataset = get_simplified_zest(split, model_path, generate_tokenizer)
         return dataset.map(zest_preprocess)
