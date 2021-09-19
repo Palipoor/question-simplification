@@ -32,7 +32,6 @@ def main(dataset_name, model, checkpoint, beam, length, simplifier_model, simpli
         result = bleu.compute(predictions=decoded_preds, references=decoded_references)
         total_bleu += result['score']
         source = d['input_ids']
-        print(result['score'])
         if 'simplified' in dataset_name:
             decoded_source = [tokenizer.batch_decode(source, skip_special_tokens=True)[0]]
             result = sari.compute(sources = decoded_source, predictions=decoded_preds, references=decoded_references)
