@@ -23,7 +23,10 @@ from src.utils import *
 @click.option("--checkpoint", "-chkpt", type = str, default = None)
 @click.option("--run-name", "-run", type = str, default = None)
 def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    if checkpoint:
+        model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
+    else:
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     training_arguments = Seq2SeqTrainingArguments(
         output_dir=f"./checkpoints/{run_name}",
@@ -40,17 +43,19 @@ def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
         predict_with_generate=True,
         report_to= ["tensorboard"]
     )
-    if checkpoint:
-        training_arguments.resume_from_checkpoint = checkpoint
     train_dataset = get_dataset(dataset_name, tokenizer, "train")
     eval_dataset = get_dataset(dataset_name, tokenizer, "eval")
     data_collator = DataCollatorForSeq2Seq(tokenizer =tokenizer)
+    if dataset_name != 'zest': 
+        metr = functools.partial(compute_metrics_bleu,tokenizer=tokenizer)
+    else:
+        metr= None
     trainer = Seq2SeqTrainer(
         model,
         args=training_arguments,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        compute_metrics=functools.partial(compute_metrics_bleu,tokenizer=tokenizer),
+        compute_metrics= metr,
         tokenizer = tokenizer,
         data_collator=data_collator
     )
