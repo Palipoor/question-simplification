@@ -6,3 +6,4 @@ pytest
 sacrebleu==2.0.0
 tensorboardX==2.4
 tensorboard
+sacrebleu

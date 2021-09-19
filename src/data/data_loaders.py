@@ -16,11 +16,6 @@ def get_asset_data(split):
     dataset = Dataset.from_dict(instances)
     return dataset
 
-
-def get_ambiqa_data():
-    pass
-
-
 def get_zest_data(split):
     dataset = load_dataset('zest',split)
     return dataset

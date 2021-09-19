@@ -38,6 +38,8 @@ def main(mode, dataset_name, model_name, batch_size, checkpoint, run_name):
         save_total_limit=1,
         learning_rate=2e-5,
         predict_with_generate=True,
+        generation_max_length=70,
+        generation_num_beams=5,
         do_predict= True,
         report_to= ["tensorboard"]
     )
