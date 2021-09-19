@@ -4,6 +4,7 @@ from transformers import (
 from src.data.data_loaders import *
 from src.utils import *
 import torch
+from tqdm import tqdm
 
 @click.command()
 @click.argument("dataset_name", metavar="<Dataset>")
@@ -24,7 +25,7 @@ def main(dataset_name, model_name, checkpoint, beam, length, simplifier_model, s
         data = get_dataset(dataset_name, tokenizer, 'validation')
     total_bleu = 0
     total_sari=0
-    for d in data:
+    for d in tqdm(data):
         references = np.where(d['labels'] != -100, d['labels'], tokenizer.pad_token_id)
         decoded_references = [tokenizer.batch_decode([references], skip_special_tokens=True)]
         generated = model.generate(input_ids = torch.tensor([d['input_ids']]), num_beams=beam, max_length = length, do_sample = True, early_stopping=True, repetition_penalty= 2.0)
